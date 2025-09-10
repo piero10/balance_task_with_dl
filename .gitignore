@@ -205,3 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+researches/catboost_info/catboost_training.json
+researches/catboost_info/
+researches/logs/
+researches/obsolete/

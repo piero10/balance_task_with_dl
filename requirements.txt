@@ -1,0 +1,5 @@
+tensorflow==2.20.0
+holoviews==1.21.0
+pandas==2.3.2
+matplotlib==3.10.6
+scikit-learn==1.7.1
