@@ -1,10 +1,7 @@
-
-
-
 class Node:
     """Класс описывающий узел графа."""
 
-    def __init__(self, id: str='', ind: int=None):
+    def __init__(self, id: str = "", ind: int = None):
         self.id = id
         self.ind = ind
         self.edges_in = dict()
@@ -29,29 +26,17 @@ class Node:
 
 
 class Edge:
-
-    def __init__(
-        self,
-        id: str,
-        node_src: Node=None,
-        node_dst: Node=None,
-        value: float=0,
-        ind: int=None
-    ):
+    def __init__(self, id: str, node_src: Node = None, node_dst: Node = None, value: float = 0, ind: int = None):
         self.id = id
         self.node_src = node_src
         self.node_dst = node_dst
         self.value = value
-        self.ind= ind
+        self.ind = ind
 
 
 class Graph:
     """Граф материальных потоков"""
 
-    def __init__(
-        self,
-        edges: dict[str, Edge],
-        nodes: dict[str, Node]
-    ):
+    def __init__(self, edges: dict[str, Edge], nodes: dict[str, Node]):
         self.edges = edges
         self.nodes = nodes

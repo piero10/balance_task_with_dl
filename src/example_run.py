@@ -1,7 +1,6 @@
 from src.graph_generator import GraphGenerator
 from src.tools import build_sunkey_links
 
-
 if __name__ == '__main__':
     gg = GraphGenerator([2, 2])
     gg.build()
@@ -23,6 +22,3 @@ if __name__ == '__main__':
         rank = max(rank, len(node.edges_in), len(node.edges_out))
 
     for node in graph.nodes.values():
-
-
-

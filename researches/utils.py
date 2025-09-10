@@ -1,8 +1,8 @@
 from __future__ import print_function
 
-import scipy.sparse as sp
 import numpy as np
-from scipy.sparse.linalg.eigen.arpack import eigsh, ArpackNoConvergence
+import scipy.sparse as sp
+from scipy.sparse.linalg.eigen.arpack import ArpackNoConvergence, eigsh
 
 
 def encode_onehot(labels):
@@ -14,7 +14,7 @@ def encode_onehot(labels):
 
 def load_data(path="data/cora/", dataset="cora"):
     """Load citation network dataset (cora only for now)"""
-    print('Loading {} dataset...'.format(dataset))
+    print("Loading {} dataset...".format(dataset))
 
     idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset), dtype=np.dtype(str))
     features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
@@ -24,10 +24,12 @@ def load_data(path="data/cora/", dataset="cora"):
     idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
     idx_map = {j: i for i, j in enumerate(idx)}
     edges_unordered = np.genfromtxt("{}{}.cites".format(path, dataset), dtype=np.int32)
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                     dtype=np.int32).reshape(edges_unordered.shape)
-    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
-                        shape=(labels.shape[0], labels.shape[0]), dtype=np.float32)
+    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype=np.int32).reshape(edges_unordered.shape)
+    adj = sp.coo_matrix(
+        (np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
+        shape=(labels.shape[0], labels.shape[0]),
+        dtype=np.float32,
+    )
 
     # build symmetric adjacency matrix
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
@@ -35,14 +37,14 @@ def load_data(path="data/cora/", dataset="cora"):
     # features = normalize_features(features)
     # adj = normalize_adj(adj + sp.eye(adj.shape[0]))
 
-    print('Dataset has {} nodes, {} edges, {} features.'.format(adj.shape[0], edges.shape[0], features.shape[1]))
+    print("Dataset has {} nodes, {} edges, {} features.".format(adj.shape[0], edges.shape[0], features.shape[1]))
 
     return features.todense(), adj, labels
 
 
 def load_data_attention(path="data/cora/", dataset="cora"):
     """Load citation network dataset (cora only for now)"""
-    print('Loading {} dataset...'.format(dataset))
+    print("Loading {} dataset...".format(dataset))
 
     idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset), dtype=np.dtype(str))
     features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
@@ -52,10 +54,12 @@ def load_data_attention(path="data/cora/", dataset="cora"):
     idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
     idx_map = {j: i for i, j in enumerate(idx)}
     edges_unordered = np.genfromtxt("{}{}.cites".format(path, dataset), dtype=np.int32)
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                     dtype=np.int32).reshape(edges_unordered.shape)
-    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
-                        shape=(labels.shape[0], labels.shape[0]), dtype=np.float32)
+    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype=np.int32).reshape(edges_unordered.shape)
+    adj = sp.coo_matrix(
+        (np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
+        shape=(labels.shape[0], labels.shape[0]),
+        dtype=np.float32,
+    )
 
     # build symmetric adjacency matrix
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
@@ -63,7 +67,7 @@ def load_data_attention(path="data/cora/", dataset="cora"):
     features = normalize_features(features)
     adj = normalize_adj(adj + sp.eye(adj.shape[0]))
 
-    print('Dataset has {} nodes, {} edges, {} features.'.format(adj.shape[0], edges.shape[0], features.shape[1]))
+    print("Dataset has {} nodes, {} edges, {} features.".format(adj.shape[0], edges.shape[0], features.shape[1]))
 
     return features.todense(), adj, labels
 
@@ -72,7 +76,7 @@ def normalize_features(mx):
     """Row-normalize sparse matrix"""
     rowsum = np.array(mx.sum(1))
     r_inv = np.power(rowsum, -1).flatten()
-    r_inv[np.isinf(r_inv)] = 0.
+    r_inv[np.isinf(r_inv)] = 0.0
     r_mat_inv = sp.diags(r_inv)
     mx = r_mat_inv.dot(mx)
     return mx
@@ -144,6 +148,7 @@ def preprocess_adj_tensor_with_identity_concat(adj_tensor, symmetric=True):
     adj_out_tensor = np.concatenate(adj_out_tensor, axis=0)
     return adj_out_tensor
 
+
 def preprocess_adj_tensor_concat(adj_tensor, symmetric=True):
     adj_out_tensor = []
     for i in range(adj_tensor.shape[0]):
@@ -154,9 +159,10 @@ def preprocess_adj_tensor_concat(adj_tensor, symmetric=True):
     adj_out_tensor = np.concatenate(adj_out_tensor, axis=0)
     return adj_out_tensor
 
+
 def preprocess_edge_adj_tensor(edge_adj_tensor, symmetric=True):
     edge_adj_out_tensor = []
-    num_edge_features = int(edge_adj_tensor.shape[1]/edge_adj_tensor.shape[2])
+    num_edge_features = int(edge_adj_tensor.shape[1] / edge_adj_tensor.shape[2])
 
     for i in range(edge_adj_tensor.shape[0]):
         edge_adj = edge_adj_tensor[i]
@@ -230,13 +236,13 @@ def normalized_laplacian(adj, symmetric=True):
 
 def rescale_laplacian(laplacian):
     try:
-        print('Calculating largest eigenvalue of normalized graph Laplacian...')
-        largest_eigval = eigsh(laplacian, 1, which='LM', return_eigenvectors=False)[0]
+        print("Calculating largest eigenvalue of normalized graph Laplacian...")
+        largest_eigval = eigsh(laplacian, 1, which="LM", return_eigenvectors=False)[0]
     except ArpackNoConvergence:
-        print('Eigenvalue calculation did not converge! Using largest_eigval=2 instead.')
+        print("Eigenvalue calculation did not converge! Using largest_eigval=2 instead.")
         largest_eigval = 2
 
-    scaled_laplacian = (2. / largest_eigval) * laplacian - sp.eye(laplacian.shape[0])
+    scaled_laplacian = (2.0 / largest_eigval) * laplacian - sp.eye(laplacian.shape[0])
     return scaled_laplacian
 
 
