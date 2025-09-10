@@ -21,4 +21,4 @@ if __name__ == '__main__':
     for node in graph.nodes.values():
         rank = max(rank, len(node.edges_in), len(node.edges_out))
 
-    for node in graph.nodes.values():
+    #for node in graph.nodes.values():

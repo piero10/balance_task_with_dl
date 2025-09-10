@@ -209,3 +209,4 @@ researches/catboost_info/catboost_training.json
 researches/catboost_info/
 researches/logs/
 researches/obsolete/
+.idea/
